@@ -11,10 +11,9 @@ with-hander
 `FORM*` 中で例外が発生した時、HANDLER の関数を呼び出す。
 
 ```lisp
-(with (lambda (c)
-       (format (error-output) "ERROR!"))
- (div 2 0)
- )
+(with-handler
+ (lambda (c) (format (error-output) "ERROR!"))
+ (div 2 0))
 ```
 
 OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が表示される。だが、その後、さらに `Error at WITH-HANDLER Handler return normally` とエラーがでてしまう。
@@ -44,9 +43,9 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
 
 ```lisp
 (block main
- (with-handler (lambda (c) (return-from main "OK"))
-  (with-handler (lambda (c))
-   (div 2 0))))
+ (with-handler
+  (lambda (c) (return-from main "OK"))
+  (div 2 0)))
 ```
 
 → `(block)` 全体の値として `"OK"` となる
@@ -55,9 +54,9 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
 
 ```lisp
 (catch 'err
- (with-handler (lambda (c) (throw 'err "OK"))
-  (with-handler (lambda (c))
-   (div 2 0))))
+ (with-handler
+  (lambda (c) (throw 'err "OK"))
+  (div 2 0)))
 ```
 
 → `(catch)` 全体の値として `"OK"` となる
@@ -68,11 +67,12 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
 
 ```lisp
 (defun foo ()
- (with-handler (lambda (c) (return-from main "OK"))
-  (with-handler (lambda (c))
-   (div 2 0))))
+ (with-handler
+  (lambda (c) (return-from main "OK"))
+  (div 2 0)))
+
 (block main
-    (foo))
+ (foo))
 ```
 
 → `Error at RETURN-FROM` `Block Tag not found: MAIN` というエラーになる。
@@ -81,11 +81,12 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
 
 ```lisp
 (defun foo ()
- (with-handler (lambda (c) (throw 'err "OK"))
-  (with-handler (lambda (c))
-   (div 2 0))))
+ (with-handler
+  (lambda (c) (throw 'err "OK"))
+  (div 2 0)))
+
 (catch 'err
-    (foo))
+ (foo))
 ```
 
 → 結果は `OK` となる
@@ -126,8 +127,7 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
    (if (condition-continuable c)
     (continue-condition c "CONTINUED"))
    (throw 'fail "FAIL-CONTINUE"))
-  (cerror "CONTINUE-STRING" "ERROR-STRING"))
- )
+  (cerror "CONTINUE-STRING" "ERROR-STRING")))
 ```
 
 → `"CONTINUED"`
@@ -139,8 +139,7 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
    (if (condition-continuable c)
     (continue-condition c "TRY-CONTINUE"))
    (throw 'fail "FAIL-CONTINUE"))
-  (div 3 0))
- )
+  (div 3 0)))
 ```
 
 → `"FAIL-CONTINUE"`
