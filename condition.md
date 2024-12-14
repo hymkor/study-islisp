@@ -49,6 +49,8 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
    (div 2 0))))
 ```
 
+→ `(block)` 全体の値として `"OK"` となる
+
 ##### `(catch)` &amp; `(throw)` の例
 
 ```lisp
@@ -57,6 +59,8 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
   (with-handler (lambda (c))
    (div 2 0))))
 ```
+
+→ `(catch)` 全体の値として `"OK"` となる
 
 両者は似ているが、静的動的の違いがある。
 
@@ -96,11 +100,11 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
 ```lisp
 (with-handler
  (lambda (c)
-  (continue-condition c 10))
+  (continue-condition c "CONTINUED"))
  (div 2 0))
 ```
 
-OKI ISLisp だと `<division-by-zero>` は継続可能な例外ではないため、`Error at CONTINUE-CONDITION` `Condition is not continuable` となってしまうが、gmnlisp だと継続可能なので `10` になる。
+→ OKI ISLisp だと `<division-by-zero>` は継続可能な例外ではないため、`Error at CONTINUE-CONDITION` `Condition is not continuable` となってしまうが、gmnlisp だと継続可能なので `(with-handler)` 全体の値は `"CONTINUED"` になる。
 
 継続エラーを明示的に起こすコマンド `(cerror)` で OKI ISLisp でも試してみると：
 
