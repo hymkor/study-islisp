@@ -17,16 +17,9 @@ with-hander
  )
 ```
 
-OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が表示される。
-だが、表示後、`Error at WITH-HANDLER Handler return normally` とさらにエラーが表示される。
-```
-ISLisp> (with-handler (lambda (c)
-(format (error-output) "ERROR!"))(div 2 0))
-ERROR!> Error at WITH-HANDLER
-> Handler return normally: #<UFUNCTION 0026FA36: #<LAMBDA>>
-```
+OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が表示される。だが、その後、さらに `Error at WITH-HANDLER Handler return normally` とエラーがでてしまう。
 
-こうならないためには、`HANDLER` 内で、
+こうならないためには、`HANDLER` 内で
 
 - `(with-handler)` の外のブロックへ処理を移動する (**非局所脱出**)
 - 例外が発生した場所で処理を継続する(**継続**)
