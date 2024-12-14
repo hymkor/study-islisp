@@ -143,3 +143,30 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
 ```
 
 → `"FAIL-CONTINUE"`
+
+クラスに関する問い合わせ[\*][class-enquiry]
+-------------------------------------------
+
+例外をクラスで判別することもできる。
+
+```lisp
+(block main
+ (with-handler
+  (lambda (c)
+   (if (instancep c (class <division-by-zero>))
+    (let ((a (arithmetic-error-operands c)))
+     (format (error-output) "~D/~D~%" (car a) (car (cdr a)))
+     (return-from main 'ok))
+    (return-from main (class-of c))))
+  (div 2 0)))
+```
+
+→ `2/0` と表示された後、 `"ok"` が全体の値となる
+
+- `(instancep OBJ CLASS)` は OBJ が CLASS のインスタンスであれば t 、さもなければ nil となる関数
+- `(class CLASS-NAME)` はクラス名からクラスそのものを指すオブジェクトを得る関数。 新クラスの作成は `(defclass …)`、クラスのインスタンスの作成は `(create CLASS …)` を用いる (ここでは詳細は省略する)
+- `(arithmetic-error-operands)`[\*][arithmetic-errors] は算術系の例外オブジェクトから、パラメータを取り出す関数。`<division-by-zero>` は算術系例外 `<arithmetic-error>` の派生クラスなので、この関数が使用可能
+- `(class-of OBJ)` は OBJ のクラスを返す。上の例ではとんできた例外が `<division-by-zero>` でなかった時に、では何者か？を確認するために `(block)` の戻り値として返している。
+
+[class-enquiry]: https://islisp-dev.github.io/ISLispHyperDraft/islisp-v23.html#class_enquiry
+[arithmetic-errors]: https://islisp-dev.github.io/ISLispHyperDraft/islisp-v23.html#arithmetic_errors
