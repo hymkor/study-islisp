@@ -170,3 +170,28 @@ OKI ISLisp で実行すると、`HANDLER` が確かに呼ばれて `ERROR!` が�
 
 [class-enquiry]: https://islisp-dev.github.io/ISLispHyperDraft/islisp-v23.html#class_enquiry
 [arithmetic-errors]: https://islisp-dev.github.io/ISLispHyperDraft/islisp-v23.html#arithmetic_errors
+
+finally的なアレ [\*](https://islisp-dev.github.io/ISLispHyperDraft/islisp-v23.html#assuring_data_consistency)
+--------------
+
+```lisp
+(unwind-protect FORM CLEANUP-FORM...)
+```
+
+FORM が正常終了した時も、FORM の中から非局所的脱出をした時、いずれの時も CLEANUP-FORM が実行される。
+
+```lisp
+(block main
+ (unwind-protect
+  (progn
+   (format (standard-output) "MAIN~%")
+   (return-from main nil)
+   (format (standard-output) "END~%")
+  )
+  (format (standard-output) "FINALLY~%")))
+```
+
+→ `MAIN` → `FINALLY` と表示される
+
++ FORM は一つの式しかないので、`(progn)` など使う
++ CLEANUP-FORM は複数の式が可能で最初のものから順に実行される
