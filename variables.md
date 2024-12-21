@@ -15,9 +15,9 @@ ISLisp>X
 1.1
 ```
 
-`(setq)` で上書きできない
+`(setq)` で変更できない
 
-```
+```Lisp
 ISLisp>(setq X 2)
 > Error at SETQ
 > Can't modify Constant: X
@@ -28,7 +28,7 @@ ISLisp>(setq X 2)
 
 `(defglobal)` で上書きできない
 
-```
+```Lisp
 ISLisp>(defglobal X 3)
 > Error at DEFGLOBAL
 > Can't modify Constant: X
